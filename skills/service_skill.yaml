@@ -1,0 +1,37 @@
+# =============================================================================
+# Service 管理技能定义
+# =============================================================================
+
+skill_name: service_management
+description: "Kubernetes Service 管理技能，支持查看 Service 列表和详情"
+
+tools:
+  - name: get_services
+    description: >
+      列出指定 namespace 下所有 Service。
+      包含：名称、类型（ClusterIP/NodePort/LoadBalancer）、集群 IP、端口映射、外部 IP。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+      required:
+        - namespace
+
+  - name: get_service_detail
+    description: >
+      获取单个 Service 的详细信息。
+      包含：完整端口配置（含 nodePort）、Pod 选择器、标签、注解。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        service_name:
+          type: string
+          description: "Service 名称"
+      required:
+        - namespace
+        - service_name

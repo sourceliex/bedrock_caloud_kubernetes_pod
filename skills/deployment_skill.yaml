@@ -1,0 +1,110 @@
+# =============================================================================
+# Deployment 管理技能定义
+# =============================================================================
+
+skill_name: deployment_management
+description: "Kubernetes Deployment 管理技能，支持查看、扩缩容、重启和修改资源配置"
+
+tools:
+  - name: get_deployments
+    description: >
+      列出指定 namespace 下所有 Deployment 的状态。
+      包含：名称、期望副本数、就绪副本数、镜像列表、创建时间。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+      required:
+        - namespace
+
+  - name: get_deployment_detail
+    description: >
+      获取单个 Deployment 的详细信息。
+      包含：副本状态、容器资源配置（requests/limits）、更新策略、Conditions。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        deployment_name:
+          type: string
+          description: "Deployment 名称"
+      required:
+        - namespace
+        - deployment_name
+
+  - name: scale_deployment
+    description: >
+      修改 Deployment 的副本数（扩容或缩容）。
+      等价于：kubectl scale deployment/<name> --replicas=N
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        deployment_name:
+          type: string
+          description: "Deployment 名称"
+        replicas:
+          type: integer
+          description: "目标副本数，必须 >= 0"
+      required:
+        - namespace
+        - deployment_name
+        - replicas
+
+  - name: restart_deployment
+    description: >
+      触发 Deployment 的滚动重启。
+      等价于：kubectl rollout restart deployment/<name>
+      通过更新 annotation 实现，不会中断服务。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        deployment_name:
+          type: string
+          description: "Deployment 名称"
+      required:
+        - namespace
+        - deployment_name
+
+  - name: update_deployment_resources
+    description: >
+      修改 Deployment 第一个容器的 CPU 和内存资源配置。
+      会触发滚动更新（Rolling Update）。
+      资源格式：CPU 使用 "100m"/"500m"/"1"，内存使用 "128Mi"/"512Mi"/"1Gi"。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        deployment_name:
+          type: string
+          description: "Deployment 名称"
+        cpu_request:
+          type: string
+          description: "CPU 请求量，例如 '100m'、'500m'、'1'"
+        memory_request:
+          type: string
+          description: "内存请求量，例如 '128Mi'、'512Mi'、'1Gi'"
+        cpu_limit:
+          type: string
+          description: "CPU 上限，例如 '500m'、'1'、'2'"
+        memory_limit:
+          type: string
+          description: "内存上限，例如 '256Mi'、'1Gi'、'2Gi'"
+      required:
+        - namespace
+        - deployment_name
+        - cpu_request
+        - memory_request
+        - cpu_limit
+        - memory_limit

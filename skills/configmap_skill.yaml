@@ -1,0 +1,61 @@
+# =============================================================================
+# ConfigMap 管理技能定义
+# =============================================================================
+
+skill_name: configmap_management
+description: "Kubernetes ConfigMap 管理技能，支持查看和更新配置数据"
+
+tools:
+  - name: get_configmaps
+    description: >
+      列出指定 namespace 下所有 ConfigMap。
+      返回名称和包含的 key 列表（不含 value，避免数据过大）。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+      required:
+        - namespace
+
+  - name: get_configmap_detail
+    description: >
+      获取单个 ConfigMap 的完整内容（所有 key-value 对）。
+      用于查看具体配置项的值。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        configmap_name:
+          type: string
+          description: "ConfigMap 名称"
+      required:
+        - namespace
+        - configmap_name
+
+  - name: update_configmap
+    description: >
+      更新 ConfigMap 中的 key-value 数据（合并更新）。
+      已存在的 key 会被覆盖，未指定的 key 保持不变。
+      例如：{"log_level": "debug", "timeout": "30s"}
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        configmap_name:
+          type: string
+          description: "ConfigMap 名称"
+        data:
+          type: object
+          description: "要更新的 key-value 字典，所有值必须为字符串"
+          additionalProperties:
+            type: string
+      required:
+        - namespace
+        - configmap_name
+        - data

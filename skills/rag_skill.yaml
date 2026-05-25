@@ -1,0 +1,33 @@
+skill_name: knowledge_base
+description: >
+  Search the internal knowledge base for Kubernetes troubleshooting guides,
+  best practices, and operational runbooks.
+
+tools:
+  - name: search_knowledge_base
+    description: >
+      Search the Kubernetes operations knowledge base for relevant documentation,
+      troubleshooting steps, and best practices. Use this tool when you need to
+      look up how to diagnose a specific Pod status (CrashLoopBackOff, OOMKilled,
+      Pending, ImagePullBackOff, Evicted, Terminating), understand error codes,
+      find recommended kubectl commands, or get guidance on Liveness/Readiness
+      probe configuration. Always call this tool before answering questions about
+      Kubernetes troubleshooting procedures.
+    input_schema:
+      type: object
+      properties:
+        query:
+          type: string
+          description: >
+            The search query describing what you want to look up.
+            Examples: "CrashLoopBackOff how to fix",
+            "OOMKilled memory limit", "Pod stuck in Pending state",
+            "ImagePullBackOff registry authentication"
+        top_k:
+          type: integer
+          description: >
+            Number of most relevant document chunks to return. Default is 3.
+            Increase to 5 if the first results are not sufficient.
+          default: 3
+      required:
+        - query

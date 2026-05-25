@@ -1,0 +1,66 @@
+# =============================================================================
+# Pod 管理技能定义
+# =============================================================================
+# 本文件是纯描述文件，不包含任何代码逻辑。
+# 主程序启动时会读取此文件，将 tools 列表传给 Claude，
+# 让 Claude 知道有哪些工具可以调用。
+# =============================================================================
+
+skill_name: pod_management
+description: "Kubernetes Pod 管理技能，支持查看 Pod 状态、详情和日志"
+
+tools:
+  - name: get_pods
+    description: >
+      列出指定 namespace 下所有 Pod 的状态信息。
+      包含：Pod 名称、运行阶段、就绪状态、重启次数、容器状态详情。
+      用于检查 Pod 健康状态，发现 CrashLoopBackOff、OOMKilled 等异常。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间，例如 'default'、'kube-system'、'production'"
+      required:
+        - namespace
+
+  - name: describe_pod
+    description: >
+      获取单个 Pod 的详细信息，类似 kubectl describe pod。
+      包含：容器配置、资源限制、挂载卷、最近 10 条事件。
+      当 Pod 异常时使用此工具获取更多诊断信息。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        pod_name:
+          type: string
+          description: "Pod 名称"
+      required:
+        - namespace
+        - pod_name
+
+  - name: get_pod_logs
+    description: >
+      获取 Pod 容器的最近日志。
+      用于诊断应用程序错误或崩溃原因。
+    input_schema:
+      type: object
+      properties:
+        namespace:
+          type: string
+          description: "Kubernetes 命名空间"
+        pod_name:
+          type: string
+          description: "Pod 名称"
+        container:
+          type: string
+          description: "容器名称（Pod 有多个容器时需指定，可选）"
+        tail_lines:
+          type: integer
+          description: "返回最后 N 行日志，默认 50"
+      required:
+        - namespace
+        - pod_name

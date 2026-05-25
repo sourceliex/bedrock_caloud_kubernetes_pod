@@ -1,0 +1,17 @@
+# Kubernetes AI Agent - 依赖清单
+# 安装命令：pip install -r requirements.txt
+
+# AWS SDK（Bedrock API 凭证链）
+boto3>=1.34.0
+
+# Anthropic SDK（支持 Bedrock 后端）
+anthropic>=0.40.0
+
+# Kubernetes Python 客户端
+kubernetes>=29.0.0
+
+# YAML 解析（读取 skills/*.yaml）
+pyyaml>=6.0.1
+
+# RAG 向量数据库（内存模式，知识库检索）
+chromadb>=0.4.0
